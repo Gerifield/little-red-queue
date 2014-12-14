@@ -11,9 +11,6 @@ use Predis\Connection\ConnectionException;
 class LittleRedQueue {
 
 	const QUEUE_PREFIX    = 'queue';
-	const PRIORITY_HIGH   = 'high';
-	const PRIORITY_NORMAL = 'normal';
-	const PRIORITY_LOW    = 'low';
 
 	/**
 	 * @var Client
@@ -74,9 +71,9 @@ class LittleRedQueue {
 		if ($this->checkConnection()) {
 
 			$return = $this->predis->blpop(array(
-					self::QUEUE_PREFIX . ':' . self::PRIORITY_HIGH . ':' . $key,
-					self::QUEUE_PREFIX . ':' . self::PRIORITY_NORMAL . ':' . $key,
-					self::QUEUE_PREFIX . ':' . self::PRIORITY_LOW . ':' . $key
+					self::QUEUE_PREFIX . ':' . QueuePriority::PRIORITY_HIGH . ':' . $key,
+					self::QUEUE_PREFIX . ':' . QueuePriority::PRIORITY_NORMAL . ':' . $key,
+					self::QUEUE_PREFIX . ':' . QueuePriority::PRIORITY_LOW . ':' . $key
 				),
 				$timeout
 			);
@@ -90,13 +87,17 @@ class LittleRedQueue {
 	}
 
 	/**
-	 * @param string $key
-	 * @param string $value
-	 * @param string $priority
+	 * @param string        $key
+	 * @param string        $value
+	 * @param QueuePriority $priority
 	 * @return bool
 	 */
-	public function put($key, $value, $priority = self::PRIORITY_NORMAL)
+	public function put($key, $value, QueuePriority $priority = null)
 	{
+		if (!$priority) {
+			$priority = QueuePriority::PRIORITY_NORMAL;
+		}
+
 		if ($this->checkConnection()) {
 			return $this->predis->rpush(
 				self::QUEUE_PREFIX . ':' . $priority . ':' . $key,
