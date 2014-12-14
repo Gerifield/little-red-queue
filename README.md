@@ -1,4 +1,4 @@
-LittleRedQueue
+LittleRedQueue [![Build Status](https://next.travis-ci.org/Gerifield/little-red-queue.svg?branch=master)](https://next.travis-ci.org/Gerifield/little-red-queue)
 ==============
 
 This is a small queue library for PHP.
