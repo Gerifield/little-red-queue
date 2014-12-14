@@ -10,6 +10,11 @@ use Predis\Connection\ConnectionException;
  */
 class LittleRedQueue {
 
+	const QUEUE_PREFIX    = 'queue';
+	const PRIORITY_HIGH   = 'high';
+	const PRIORITY_NORMAL = 'normal';
+	const PRIORITY_LOW    = 'low';
+
 	/**
 	 * @var Client
 	 */
@@ -46,6 +51,7 @@ class LittleRedQueue {
 		if (!$this->predis->isConnected()) {
 			try {
 				$this->predis->connect();
+				return true;
 			} catch (ConnectionException $e) {
 				return false;
 			}
@@ -54,12 +60,49 @@ class LittleRedQueue {
 	}
 
 
-	public function get()
+	/**
+	 * Get a job from queue.
+	 * This call is blocking.
+	 *
+	 * @param string $key
+	 * @param int    $timeout
+	 *
+	 * @return string|null
+	 */
+	public function get($key, $timeout = 30)
 	{
-		if ($this->predis->isConnected()) {
-			return true;
+		if ($this->checkConnection()) {
+
+			$return = $this->predis->blpop(array(
+					self::QUEUE_PREFIX . ':' . self::PRIORITY_HIGH . ':' . $key,
+					self::QUEUE_PREFIX . ':' . self::PRIORITY_NORMAL . ':' . $key,
+					self::QUEUE_PREFIX . ':' . self::PRIORITY_LOW . ':' . $key
+				),
+				$timeout
+			);
+
+			if (is_array($return)) {
+				return $return[1];
+			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
+	 * @param string $priority
+	 * @return bool
+	 */
+	public function put($key, $value, $priority = self::PRIORITY_NORMAL)
+	{
+		if ($this->checkConnection()) {
+			return $this->predis->rpush(
+				self::QUEUE_PREFIX . ':' . $priority . ':' . $key,
+				$value
+			);
+		}
+		return false;
 	}
 }
