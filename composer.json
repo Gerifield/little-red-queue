@@ -1,6 +1,7 @@
 {
     "name": "gerifield/little-red-queue",
     "description": "Small PHP queue system with redis backend.",
+    "homepage": "https://github.com/Gerifield/little-red-queue",
     "require": {
         "php": ">=5.3",
         "predis/predis": "~1.0"
