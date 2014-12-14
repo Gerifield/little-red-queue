@@ -15,5 +15,15 @@
             "name": "gerifield",
             "email": "radics.gergely@ustream.tv"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "LittleRedQueue\\": "src/LittleRedQueue/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LittleRedQueue\\Test\\": "test/LittleRedQueue/"
+        }
+    }
 }
