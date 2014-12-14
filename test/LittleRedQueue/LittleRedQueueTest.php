@@ -78,7 +78,9 @@ class LittleRedQueueTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testCheckConnectionNewConnectionError()
 	{
-		$this->predisConnect(false);
+		$this->predis->expects($this->once())
+			->method('isConnected')
+			->willReturn(false);
 
 		$exception = $this->getMockBuilder('\Predis\Connection\ConnectionException')
 			->disableOriginalConstructor()
