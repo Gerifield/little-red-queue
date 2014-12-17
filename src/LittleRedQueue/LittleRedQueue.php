@@ -24,14 +24,18 @@ class LittleRedQueue {
 		);
 	}
 
-	public static function createWithConfig($host = '127.0.0.1', $port = 6379, $scheme = 'tcp')
+	public static function createWithConfig(array $params)
 	{
+		$params = array_merge(
+			array(
+				'scheme' => 'tcp',
+				'host'   => '127.0.0.1',
+				'port'   => 6379,
+			), $params
+		);
+
 		return new self(
-			new Client(array(
-				'scheme' => $scheme,
-				'host'   => $host,
-				'port'   => $port,
-			))
+			new Client($params)
 		);
 	}
 

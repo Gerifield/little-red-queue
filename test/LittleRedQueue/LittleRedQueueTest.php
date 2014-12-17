@@ -48,7 +48,7 @@ class LittleRedQueueTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testCreateWithConfig()
 	{
-		$this->assertInstanceOf('LittleRedQueue\LittleRedQueue', LittleRedQueue::createWithConfig());
+		$this->assertInstanceOf('LittleRedQueue\LittleRedQueue', LittleRedQueue::createWithConfig(array()));
 	}
 
 	public function testCheckConnectionAlreadyConnected()
